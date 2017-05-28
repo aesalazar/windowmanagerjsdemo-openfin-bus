@@ -1,0 +1,37 @@
+body {
+    background: black;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+textarea {
+    background-color: #3a3a3a;
+    color: white;
+    font-size: medium;
+}
+
+#divOutputArea{
+    padding: 10px;
+    width: calc(100% - 25px);
+    height: calc(100vh - 70px);
+}
+
+#logOutput{
+    width: 100%;
+    height: calc(100vh - 60px);
+}
+
+.divButtons{
+    text-align: center;
+}
+.divButtons button {
+    background: #D2D26E;
+    color: black;
+    font-size: large;
+    height: 26px;
+}
+.divButtons input {
+    height: 20px;
+    vertical-align: top;
+    font-size: large;
+}

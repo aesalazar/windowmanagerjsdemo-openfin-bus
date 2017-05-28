@@ -1,0 +1,18 @@
+package windowmanagerdemo.openfin;
+
+import com.openfin.desktop.BusListener;
+import windowmanagerdemo.Main;
+
+public class MessageBusListener implements BusListener {
+    /**
+     * Invoked when a subscrbied message is received
+     *
+     * @param sourceUuid Source of th message
+     * @param topic      Topic of the message
+     * @param payload    Message content
+     */
+    @Override
+    public void onMessageReceived(String sourceUuid, String topic, Object payload) {
+        Main.logMessage(String.format("Bus Message from %s: %s ", sourceUuid, payload.toString()));
+    }
+}

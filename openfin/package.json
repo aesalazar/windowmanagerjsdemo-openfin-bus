@@ -1,0 +1,25 @@
+{
+  "name": "windowmanagerjsdemo-openfin-bus-javascript",
+  "version": "0.0.1",
+  "description": "Demonstrates using windowmanagerjs with OpenFins inter-application message bus.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "openfin": "node_modules/.bin/openfin --launch --config http://localhost:5000/app.json"
+  },
+  "keywords": [
+    "WindowManagerJS",
+    "Openfin",
+    "Java",
+	  "WPF",
+	  ".NET",
+    "Message Bus",
+    "Inter-application"
+  ],
+  "author": "Ernie Salazar",
+  "company": "Eikos Partners, LLC",
+  "license": "ISC",
+  "jshintConfig": {
+    "esversion": 6
+  }
+}

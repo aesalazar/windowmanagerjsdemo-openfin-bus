@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Demonstration of the Eikos windowmanager and OpenFin inter-application bus</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="divMain">
+        <div class="divButtons">
+            <div>
+                <button onclick="publishMessage()">Publish</button>
+                <input id="textMessage" type="text" value="Hi from JAVASCRIPT!" placeholder=" Enter message to send...  " />
+                <button onclick="sendMessage('java')">Java</button>
+                <button onclick="sendMessage('wpf')">.NET</button>
+            </div>
+        </div>
+
+        <div id="divOutputArea" class="divOutput">
+            <textarea id="logOutput"></textarea>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="index.js"></script>
+</body>
+
+</html>
