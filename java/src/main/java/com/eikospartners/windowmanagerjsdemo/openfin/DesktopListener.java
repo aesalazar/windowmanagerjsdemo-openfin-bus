@@ -4,6 +4,7 @@ import com.eikospartners.windowmanagerjsdemo.Main;
 import com.eikospartners.windowmanagerjsdemo.helper.ReadyListener;
 import com.openfin.desktop.DesktopStateListener;
 
+import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +17,8 @@ public class DesktopListener implements DesktopStateListener {
     public void onReady() {
         Main.logMessage("CONNECTED!");
 
-        for (ReadyListener listener : readyListeners)
-            listener.Ready();
+        for (int i = 0; i < readyListeners.size(); i++)
+            readyListeners.get(i).Ready();
     }
 
     /**
