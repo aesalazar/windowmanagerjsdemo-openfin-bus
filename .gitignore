@@ -361,3 +361,21 @@ __pycache__/
 *.xsd.cs
 
 # End of https://www.gitignore.io/api/intellij,visualstudio,visualstudiocode
+
+# Created by https://www.gitignore.io/api/maven
+
+### Maven ###
+java/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+java/.mvn/timing.properties
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!java/.mvn/wrapper/maven-wrapper.jar
+
+# End of https://www.gitignore.io/api/maven
