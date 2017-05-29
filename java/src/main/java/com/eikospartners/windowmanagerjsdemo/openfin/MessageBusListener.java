@@ -1,7 +1,7 @@
-package windowmanagerdemo.openfin;
+package com.eikospartners.windowmanagerjsdemo.openfin;
 
 import com.openfin.desktop.BusListener;
-import windowmanagerdemo.Main;
+import com.eikospartners.windowmanagerjsdemo.Main;
 
 public class MessageBusListener implements BusListener {
     /**

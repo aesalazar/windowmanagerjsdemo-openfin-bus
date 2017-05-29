@@ -10,7 +10,7 @@
       stylesheets="@MainWindow.css"
       xmlns="http://javafx.com/javafx/8.0.112"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="windowmanagerdemo.window.MainController">
+      fx:controller="com.eikospartners.windowmanagerjsdemo.MainController">
         <HBox fx:id="controlBox">
                 <Button fx:id="publishButton" text="Publish" />
                 <TextField fx:id="messageText" text="Hi from JAVA!" />

@@ -1,4 +1,9 @@
-package windowmanagerdemo.window;
+package com.eikospartners.windowmanagerjsdemo;
+
+import com.eikospartners.windowmanagerjsdemo.openfin.DesktopListener;
+import com.eikospartners.windowmanagerjsdemo.openfin.MessageBusListener;
+import com.eikospartners.windowmanagerjsdemo.helper.ReadyListener;
+import com.eikospartners.windowmanagerjsdemo.openfin.AcknowledgeListener;
 
 import com.openfin.desktop.DesktopConnection;
 import com.openfin.desktop.InterApplicationBus;
@@ -17,12 +22,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
-
-import windowmanagerdemo.Main;
-import windowmanagerdemo.helper.ReadyListener;
-import windowmanagerdemo.openfin.AcknowledgeListener;
-import windowmanagerdemo.openfin.DesktopListener;
-import windowmanagerdemo.openfin.MessageBusListener;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -77,7 +76,7 @@ public class MainController implements Initializable {
         //Wire the button
         wireButtons();
 
-        //Connect to openfin
+        //Connect to com.eikospartners.windowmanagerjsdemo.openfin
         try {
             connectOpenfin();
         } catch (Exception ex){

@@ -1,8 +1,8 @@
-package windowmanagerdemo.openfin;
+package com.eikospartners.windowmanagerjsdemo.openfin;
 
+import com.eikospartners.windowmanagerjsdemo.Main;
 import com.openfin.desktop.Ack;
 import com.openfin.desktop.AckListener;
-import windowmanagerdemo.Main;
 
 public class AcknowledgeListener  implements AckListener{
     /**
