@@ -19,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 
 import windowmanagerdemo.Main;
+import windowmanagerdemo.helper.ReadyListener;
 import windowmanagerdemo.openfin.AcknowledgeListener;
 import windowmanagerdemo.openfin.DesktopListener;
 import windowmanagerdemo.openfin.MessageBusListener;
@@ -49,6 +50,7 @@ public class MainController implements Initializable {
 
     //OpenFin
     protected DesktopConnection desktopConnection;
+    protected DesktopListener desktopListener;
     protected InterApplicationBus interApplicationBus;
 
     //UI properties
@@ -92,20 +94,10 @@ public class MainController implements Initializable {
         runtimeConfiguration.setRuntimeVersion(RUNTIMEVERSION);
 
         Main.logMessage("Connection...");
+        desktopListener = new DesktopListener();
+        desktopListener.addListener(readyListener);
         desktopConnection = new DesktopConnection(UUID);
-        desktopConnection.connect(runtimeConfiguration, new DesktopListener(), 3000);
-        interApplicationBus = desktopConnection.getInterApplicationBus();
-
-        Main.logMessage("Subscribers...");
-        interApplicationBus.addSubscribeListener(subscriptionListener);
-
-        Main.logMessage("Message Bus Subscribe...");
-        interApplicationBus.subscribe(
-                "*"
-                , TOPIC
-                , new MessageBusListener()
-                , new AcknowledgeListener()
-        );
+        desktopConnection.connect(runtimeConfiguration, desktopListener, 3000);
     }
 
     protected void wireButtons(){
@@ -133,6 +125,29 @@ public class MainController implements Initializable {
         });
 
     }
+
+    protected ReadyListener readyListener = new ReadyListener() {
+        @Override
+        public void Ready() {
+            desktopListener.removeListener(readyListener);
+
+            Main.logMessage("Subscribers...");
+            interApplicationBus = desktopConnection.getInterApplicationBus();
+            interApplicationBus.addSubscribeListener(subscriptionListener);
+
+            Main.logMessage("Message Bus Subscribe...");
+            try {
+                interApplicationBus.subscribe(
+                        "*"
+                        , TOPIC
+                        , new MessageBusListener()
+                        , new AcknowledgeListener()
+                );
+            } catch (Exception ex) {
+                Main.logMessage("subscribe: " + ex.toString());
+            }
+        }
+    };
 
 protected SubscriptionListener subscriptionListener = new SubscriptionListener() {
     @Override

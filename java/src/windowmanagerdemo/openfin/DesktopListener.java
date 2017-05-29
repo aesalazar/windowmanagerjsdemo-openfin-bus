@@ -2,6 +2,10 @@ package windowmanagerdemo.openfin;
 
 import com.openfin.desktop.DesktopStateListener;
 import windowmanagerdemo.Main;
+import windowmanagerdemo.helper.ReadyListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DesktopListener implements DesktopStateListener {
     /**
@@ -11,6 +15,9 @@ public class DesktopListener implements DesktopStateListener {
     @Override
     public void onReady() {
         Main.logMessage("CONNECTED!");
+
+        for (ReadyListener listener : readyListeners)
+            listener.Ready();
     }
 
     /**
@@ -29,7 +36,7 @@ public class DesktopListener implements DesktopStateListener {
      */
     @Override
     public void onError(String reason) {
-        //Main.logMessage("ERROR: " + reason);
+        Main.logMessage("ERROR: " + reason);
     }
 
     /**
@@ -50,5 +57,26 @@ public class DesktopListener implements DesktopStateListener {
     @Override
     public void onOutgoingMessage(String message) {
         Main.logMessage("OUTGOING: " + message);
+    }
+
+    /**
+     * Collection of {@link ReadyListener}s to be called when the desktop connection signals it is ready.
+     */
+    protected List<ReadyListener> readyListeners = new ArrayList<>();
+
+    /**
+     * Adds {@link ReadyListener} to be called when the desktop connection signals it is ready.
+     * @param listener {@link ReadyListener} to add.
+     */
+    public void addListener(ReadyListener listener){
+        readyListeners.add(listener);
+    }
+
+    /**
+     * Removes {@link ReadyListener} added by {@link #addListener(ReadyListener)}.
+     * @param listener {@link ReadyListener} to remove.
+     */
+    public void removeListener(ReadyListener listener){
+        readyListeners.remove(listener);
     }
 }
