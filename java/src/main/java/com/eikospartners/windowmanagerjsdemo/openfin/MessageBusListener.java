@@ -3,6 +3,9 @@ package com.eikospartners.windowmanagerjsdemo.openfin;
 import com.openfin.desktop.BusListener;
 import com.eikospartners.windowmanagerjsdemo.Main;
 
+/**
+ * Awaits messages from a message bus.
+ */
 public class MessageBusListener implements BusListener {
     /**
      * Invoked when a subscrbied message is received

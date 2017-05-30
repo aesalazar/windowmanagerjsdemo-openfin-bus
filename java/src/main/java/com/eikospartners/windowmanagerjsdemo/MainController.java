@@ -1,9 +1,7 @@
 package com.eikospartners.windowmanagerjsdemo;
 
-import com.eikospartners.windowmanagerjsdemo.openfin.DesktopListener;
-import com.eikospartners.windowmanagerjsdemo.openfin.MessageBusListener;
+import com.eikospartners.windowmanagerjsdemo.openfin.*;
 import com.eikospartners.windowmanagerjsdemo.helper.ReadyListener;
-import com.eikospartners.windowmanagerjsdemo.openfin.AcknowledgeListener;
 
 import com.openfin.desktop.DesktopConnection;
 import com.openfin.desktop.InterApplicationBus;
@@ -76,7 +74,7 @@ public class MainController implements Initializable {
         //Wire the button
         wireButtons();
 
-        //Connect to com.eikospartners.windowmanagerjsdemo.openfin
+        //Connect to openfin
         try {
             connectOpenfin();
         } catch (Exception ex){

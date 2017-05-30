@@ -4,6 +4,9 @@ import com.eikospartners.windowmanagerjsdemo.Main;
 import com.openfin.desktop.Ack;
 import com.openfin.desktop.AckListener;
 
+/**
+ * Awaits a success or failure response.
+ */
 public class AcknowledgeListener  implements AckListener{
     /**
      * Invoked when the request to AppDesktop is successful
