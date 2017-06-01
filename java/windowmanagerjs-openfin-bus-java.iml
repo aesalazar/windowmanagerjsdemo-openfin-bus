@@ -11,7 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: co.openfin:openfin-desktop-java-adapter:6.0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: co.openfin:openfin-desktop-java-adapter:6.0.1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20160810" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.3.12.v20160915" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-util:9.3.12.v20160915" level="project" />
