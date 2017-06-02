@@ -7,13 +7,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
 public class Main extends Application {
 
+    static final Logger logger = Logger.getLogger(Main.class);
     public static ObservableList ApplicationLog = FXCollections.observableArrayList();
 
     public static void logMessage(String msg){
         ApplicationLog.add(msg);
+        logger.info(msg);
     }
 
     public void start(Stage primaryStage) throws Exception {
