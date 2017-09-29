@@ -4,7 +4,6 @@ import com.eikospartners.windowmanagerjsdemo.Main;
 import com.eikospartners.windowmanagerjsdemo.helper.ReadyListener;
 import com.openfin.desktop.DesktopStateListener;
 
-import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 import java.util.List;
 

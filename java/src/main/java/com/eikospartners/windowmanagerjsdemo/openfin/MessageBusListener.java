@@ -8,7 +8,7 @@ import com.eikospartners.windowmanagerjsdemo.Main;
  */
 public class MessageBusListener implements BusListener {
     /**
-     * Invoked when a subscrbied message is received
+     * Invoked when a subscribed message is received
      *
      * @param sourceUuid Source of th message
      * @param topic      Topic of the message

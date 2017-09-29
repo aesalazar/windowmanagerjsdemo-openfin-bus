@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Openfin.Desktop;
 using Openfin.Desktop.Messaging;
 using System.ComponentModel;
+using System.Configuration;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -11,16 +14,18 @@ namespace OpenfinBus
     public partial class MainWindow
     {
         //Constants
-        protected const string Uuid = "windowmanagerjsdemo-openfin-bus-wpf";
-        protected const string JsUuid = "windowmanagerjsdemo-openfin-bus-javascript";
-        protected const string JavaUuid = "windowmanagerjsdemo-openfin-bus-java";
-        protected const string Topic = "windowmanagerjsdemo-openfin-topic1";
-        protected const string RuntimeVersion = "stable";
+        protected readonly string RuntimeVersion = ConfigurationManager.AppSettings["openfin.runtime"];
+
+        protected readonly string Uuid = ConfigurationManager.AppSettings["openfin.uuid.wpf"];
+        protected readonly string JsUuid = ConfigurationManager.AppSettings["openfin.uuid.javascript"];
+        protected readonly string JavaUuid = ConfigurationManager.AppSettings["openfin.uuid.java"];
+
+        protected readonly string MainTopic = ConfigurationManager.AppSettings["openfin.topic.topic1"];
 
         //OpenFin
         protected Runtime Runtime;
         protected InterApplicationBus InterAppBus;
-        protected IMessageBusSubscription<string> Subscription;
+        protected List<IMessageBusSubscription<string>> Subscriptions = new List<IMessageBusSubscription<string>>();
 
         //UI properties
         protected readonly ObservableCollection<string> LogList = new ObservableCollection<string>();
@@ -63,9 +68,17 @@ namespace OpenfinBus
                 LogMessage("Unsubscribers...");
                 InterAppBus.addUnsubscribeListener(UnsubscriptionListener);
 
-                LogMessage("Message Bus Subscribe...");
-                Subscription = InterApplicationBus.Subscription<string>(Runtime, Topic);
-                Subscription.MessageReceived += (s, e) => LogMessage(e.Message);
+                var topics = ConfigurationManager.AppSettings
+                    .AllKeys
+                    .Where(key => key.StartsWith("openfin.topic"))
+                    .Select(key => ConfigurationManager.AppSettings[key]);
+
+                foreach (var topic in topics)
+                {
+                    LogMessage("Message Bus Subscribe...");
+                    Subscriptions.Add(InterApplicationBus.Subscription<string>(Runtime, topic));
+                    Subscriptions.Last().MessageReceived += (s, e) => LogMessage(e.Message);
+                }
             });
         }
 
@@ -77,47 +90,37 @@ namespace OpenfinBus
 
         private void Publish_OnClick(object sender, RoutedEventArgs e)
         {
-            InterAppBus.Publish(Topic, MessageTextBox.Text);
+            InterAppBus.Publish(MainTopic, MessageTextBox.Text);
         }
 
         private void JavaButton_OnClick(object sender, RoutedEventArgs e)
         {
-            InterAppBus.Send(JavaUuid, Topic, MessageTextBox.Text);
+            InterAppBus.Send(JavaUuid, MainTopic, MessageTextBox.Text);
         }
 
         private void JsButton_OnClick(object sender, RoutedEventArgs e)
         {
-            InterAppBus.Send(JsUuid, Topic, MessageTextBox.Text);
+            InterAppBus.Send(JsUuid, MainTopic, MessageTextBox.Text);
         }
 
         protected void SubscriptionListener(string uuid, string topic)
         {
             LogMessage($"SUBSCRIBER: App '{uuid}' to {topic}");
 
-            switch (uuid)
-            {
-                case JavaUuid:
-                    Dispatcher.Invoke(() => JavaButton.IsEnabled = true);
-                    break;
-                case JsUuid:
-                    Dispatcher.Invoke(() => JsButton.IsEnabled = true);
-                    break;
-            }
+            if (uuid == JavaUuid)
+                Dispatcher.Invoke(() => JavaButton.IsEnabled = true);
+            else if (uuid == JsUuid)
+                Dispatcher.Invoke(() => JsButton.IsEnabled = true);
         }
 
         protected void UnsubscriptionListener(string uuid, string topic)
         {
             LogMessage($"UNSUBSCRIBER: App '{uuid}' from {topic}");
 
-            switch (uuid)
-            {
-                case JavaUuid:
-                    Dispatcher.Invoke(() => JavaButton.IsEnabled = false);
-                    break;
-                case JsUuid:
-                    Dispatcher.Invoke(() => JsButton.IsEnabled = false);
-                    break;
-            }
+            if (uuid == JavaUuid)
+                Dispatcher.Invoke(() => JavaButton.IsEnabled = false);
+            else if (uuid == JsUuid)
+                Dispatcher.Invoke(() => JsButton.IsEnabled = false);
         }
 
         private void OnClosing(object sender, CancelEventArgs cancelEventArgs)
