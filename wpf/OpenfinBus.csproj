@@ -43,8 +43,8 @@
       <HintPath>packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenfinDesktop, Version=7.0.0.5, Culture=neutral, PublicKeyToken=18a277d64dddd680, processorArchitecture=MSIL">
-      <HintPath>packages\OpenfinDesktop.7.0.0\lib\net40\OpenfinDesktop.dll</HintPath>
+    <Reference Include="OpenfinDesktop, Version=7.1.0.0, Culture=neutral, PublicKeyToken=18a277d64dddd680, processorArchitecture=MSIL">
+      <HintPath>packages\OpenfinDesktop.7.1.0\lib\net40\OpenfinDesktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
