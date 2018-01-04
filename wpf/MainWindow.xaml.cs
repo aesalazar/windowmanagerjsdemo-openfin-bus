@@ -5,6 +5,7 @@ using Openfin.Desktop;
 using Openfin.Desktop.Messaging;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -86,6 +87,7 @@ namespace OpenfinBus
         {
             //Make it thread safe
             Dispatcher.Invoke(DispatcherPriority.Render,new Action(() => LogList.Insert(0, msg)));
+            Debug.WriteLine($"****-{msg}");
         }
 
         private void Publish_OnClick(object sender, RoutedEventArgs e)
