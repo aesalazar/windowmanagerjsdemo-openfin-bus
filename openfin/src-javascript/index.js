@@ -1,3 +1,16 @@
+// import _ from 'lodash';
+
+// document.body.appendChild(createMainElement());
+
+// /**
+//  * Creates the main element of the application.
+//  */
+// function createMainElement() {
+//     var element = document.createElement('div');
+//     element.innerHTML = _.join(['Hello', 'World'], ' ');
+//     return element;
+// }
+
 const textMessage = document.getElementById("textMessage");
 const logOutput = document.getElementById("logOutput");
 
@@ -42,7 +55,7 @@ function unsubscribeListner(uuid, topic, name) {
 fin.desktop.InterApplicationBus.addUnsubscribeListener(unsubscribeListner);
 
 //Subscriptions
-function messageListener (message, uuid, name) {
+function messageListener(message, uuid, name) {
     logMessage({ text: "RECEIVED: App '" + uuid + "' sent message: " + message });
 }
 fin.desktop.InterApplicationBus.subscribe("*", topic, messageListener);

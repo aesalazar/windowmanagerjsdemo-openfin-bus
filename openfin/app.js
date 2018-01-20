@@ -1,7 +1,7 @@
 //---------  WEB SERVER ---------//
 const http = require('http');
 const express = require('express');
-const openFinJson = require('./public/openFinJson');
+const openFinJson = require('./server/openFinJson');
 
 const webPort = 5000;
 
@@ -13,9 +13,9 @@ const server = http.createServer(app);
 app.use(express.static('./public'));
 
 //Generate app.json dynamically based on calling ip
-app.get('/app.json', function (req, res, next) {
+app.get('/app-javascript.json', function (req, res, next) {
     //Set the json to reference ipaddress and send it back
-    let json = openFinJson(req.headers.host);
+    let json = openFinJson(req.headers.host, 'javascript.html');
     res.setHeader('Content-type', 'application/json');
     res.send(json);
 });
