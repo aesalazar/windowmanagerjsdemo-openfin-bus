@@ -25,6 +25,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
     "express": "^4.16.2",
     "jshint": "^2.9.5",
     "jshint-loader": "^0.8.4",
@@ -32,6 +33,7 @@
     "mocha-loader": "^1.1.2",
     "mocha-webpack": "^1.0.1",
     "openfin-cli": "^1.1.5",
+    "sinon": "^4.2.0",
     "webpack": "^3.10.0",
     "webpack-node-externals": "^1.6.0"
   },
