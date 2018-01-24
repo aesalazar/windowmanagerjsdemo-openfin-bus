@@ -7,6 +7,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Start JS",
+            "program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server",
+            "args": [
+                "--config",
+                "webpack.javascript.js",
+                "--hot",
+                "--progress"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Tests JS",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
@@ -22,7 +35,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Start Server",
             "program": "${workspaceRoot}\\app.js"
         }
     ]

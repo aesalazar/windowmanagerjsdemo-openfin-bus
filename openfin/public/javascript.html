@@ -9,26 +9,11 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-
-    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-    <div class="divMain">
-        <div class="divButtons">
-            <div>
-                <button onclick="publishMessage()">Publish</button>
-                <input id="textMessage" type="text" value="Hi from JAVASCRIPT!" placeholder=" Enter message to send...  " />
-                <button onclick="sendMessage('java')">Java</button>
-                <button onclick="sendMessage('wpf')">.NET</button>
-            </div>
-        </div>
-
-        <div id="divOutputArea" class="divOutput">
-            <textarea id="logOutput"></textarea>
-        </div>
-    </div>
-
+    <div>MAIN GRID</div>
+    <div id="divMainGrid" style="height:500px; width:100%" class="ag-theme-dark"></div>
     <script src="bundle/javascript.js"></script>
 </body>
 

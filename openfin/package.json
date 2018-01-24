@@ -4,10 +4,11 @@
   "description": "Demonstrates using windowmanagerjs with OpenFins inter-application message bus.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "openfin-js": "node_modules/.bin/openfin --launch --config http://localhost:5000/app-javascript.json",
+    "start-server": "node app.js",
     "test-js": "mocha-webpack --webpack-config webpack.test.js \"src-javascript/**/*.test.js\"",
-    "build-js": "webpack --config webpack.javascript.js"
+    "start-js": "webpack-dev-server --config webpack.javascript.js --hot --progress",
+    "build-js": "webpack --config webpack.javascript.js",
+    "openfin-js": "node_modules/.bin/openfin --launch --config http://localhost:5000/app-javascript.json"
   },
   "keywords": [
     "WindowManagerJS",
@@ -26,6 +27,7 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
+    "css-loader": "^0.28.9",
     "express": "^4.16.2",
     "jshint": "^2.9.5",
     "jshint-loader": "^0.8.4",
@@ -35,9 +37,11 @@
     "openfin-cli": "^1.1.5",
     "sinon": "^4.2.0",
     "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1",
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "ag-grid": "^15.0.0",
     "lodash": "^4.17.4"
   }
 }
