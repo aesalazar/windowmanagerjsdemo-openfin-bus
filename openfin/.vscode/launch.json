@@ -36,7 +36,7 @@
             "type": "node",
             "request": "launch",
             "name": "Start Server",
-            "program": "${workspaceRoot}\\app.js"
+            "program": "${workspaceRoot}\\server.js"
         }
     ]
 }

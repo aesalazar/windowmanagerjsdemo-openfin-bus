@@ -1,21 +1,31 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
-    entry: './src-javascript/index.js',
+    entry: {
+        index: [
+            './src-javascript/index.js',
+            'webpack-hot-middleware/client?reload=true' //TODO: figure out why HMR does not work
+        ]
+    },
     devtool: 'source-map',
     output: {
         filename: 'javascript.js',
         path: path.resolve(__dirname, 'public/bundle')
     },
+    plugins: [
+        new webpack.NamedModulesPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
+    ],
     devServer: {
         port: 5000,
         contentBase: 'public',
-        publicPath: '/bundle/',
+        publicPath: '/bundle',
         historyApiFallback: {
             index: 'javascript.html'
         },
         hot: true,
-        lazy: false,
         overlay: {
             warnings: true,
             errors: true
@@ -33,7 +43,7 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['babel-preset-env']
+                        presets: ['babel-preset-env', 'es2015']
                     }
                 }
             },
