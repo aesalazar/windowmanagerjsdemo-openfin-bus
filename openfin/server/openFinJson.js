@@ -8,13 +8,16 @@ const packageJson = require("../package.json");
  * @returns A well-formed JSON object that the OpenFin runtime can use to launch with.
  */
 function createJson(host, htmlFile) {
+    host = host || "";
+    htmlFile = htmlFile || "";
+    
     const json = {
         "devtools_port": 9090,
         "startup_app": {
             "name": packageJson.name,
-            "url": "http://" + host + "/" + htmlFile,
+            "url": `http://${host}/${htmlFile}`,
             "uuid": packageJson.name,
-            "icon": "http://" + host + "/images/eikos-logo-multi.ico",
+            "icon": `http://${host}/images/eikos-logo-multi.ico`,
             "autoShow": true,
             "defaultTop": 100,
             "defaultLeft": 100,
@@ -28,7 +31,7 @@ function createJson(host, htmlFile) {
         "shortcut": {
             "company": packageJson.company,
             "description": packageJson.description,
-            "icon": "http://" + host + "/images/eikos-logo-multi.ico",
+            "icon": `http://${host}/images/eikos-logo-multi.ico`,
             "name": packageJson.name
         }
     };

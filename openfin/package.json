@@ -4,6 +4,7 @@
   "description": "Demonstrates using windowmanagerjs with OpenFins inter-application message bus.",
   "main": "app.js",
   "scripts": {
+    "test-server": "mocha-webpack --webpack-config webpack.test.js \"server/**/*.test.js\"",
     "start-server": "node server.js",
     "test-js": "mocha-webpack --webpack-config webpack.test.js \"src-javascript/**/*.test.js\"",
     "start-js": "webpack-dev-server --config webpack.javascript.js --hot --progress",

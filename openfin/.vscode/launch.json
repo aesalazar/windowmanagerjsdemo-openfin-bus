@@ -20,7 +20,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Tests JS",
+            "name": "Test JS",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
                 "-u",
@@ -37,6 +37,21 @@
             "request": "launch",
             "name": "Start Server",
             "program": "${workspaceRoot}\\server.js"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test Server",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}\\server\\**\\*.test.js"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
     ]
 }
