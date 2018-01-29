@@ -38,4 +38,4 @@ module.exports = {
     
     /** Order Messages */
     messages
-}
+};

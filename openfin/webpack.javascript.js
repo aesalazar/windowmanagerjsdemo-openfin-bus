@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 
+//Allow storage of css in a separate file
+const extractTextPlugin = require('extract-text-webpack-plugin');
+
 module.exports = {
     entry: {
         index: [
@@ -16,7 +19,8 @@ module.exports = {
     plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
+        new extractTextPlugin("styles.css"),
     ],
     devServer: {
         port: 5000,
@@ -32,10 +36,13 @@ module.exports = {
         },
     },
     module: {
-        rules: [
+        rules: [           
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+                loader: extractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
+                })
             },
             {
                 test: /\.js$/,
