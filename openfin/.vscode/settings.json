@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
+        "is",
         "unsubscriber",
+        "virtualized",
         "windowmanagerjsdemo"
     ],
     "mocha.enabled": true,

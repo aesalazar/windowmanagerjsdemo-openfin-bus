@@ -1,17 +1,12 @@
 const fs = require('fs');
 const path = require('path');
+const messageData = require('./orderMessagesData');
 
-//Load from csv
-const messages = fs.readFileSync(
-    path.join(__dirname, "order_messages_demo.csv"),
-    { encoding: "utf-8" }
-).split(/[\r\n]+/g);
-
-//Pop the header row and parse
+//Parse the header row to get name and types
 const fieldsNames = [];
 const fieldTypes = {};
-messages
-    .shift()
+
+messageData.header
     .split(",")
     .forEach(field => {
         const parts = field.split(":");
@@ -26,16 +21,30 @@ const indexFields = Object
         return fieldTypes[field] !== "String";
     });
 
+//Build the order objects
+const orders = [];
+messageData.orders
+    .forEach(field => {
+        const parts = field.split(",");
+        const order = {};
+        
+        parts.forEach((v, i) => order[fieldsNames[i]] = v);
+        orders.push(order);
+    });
+
 module.exports = {
     /** Message Field Names */
     fieldsNames,
-    
+
     /** Message Field Types mapped by Field Name */
     fieldTypes,
-    
+
     /** Indexable (non-string) fields */
     indexFields,
-    
-    /** Order Messages */
-    messages
+
+    /** Order objects */
+    orders,
+
+    /** Raw order messages as strings */
+    messages: messageData.orders,
 };

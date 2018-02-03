@@ -8,11 +8,12 @@ module.exports = {
     entry: {
         index: [
             './src-javascript/index.js',
-            'webpack-hot-middleware/client?reload=true' //TODO: figure out why HMR does not work
+            'webpack-hot-middleware/client?reload=true'
         ]
     },
     devtool: 'source-map',
     output: {
+        publicPath: '/bundle',
         filename: 'javascript.js',
         path: path.resolve(__dirname, 'public/bundle')
     },
@@ -22,19 +23,6 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new extractTextPlugin("styles.css"),
     ],
-    devServer: {
-        port: 5000,
-        contentBase: 'public',
-        publicPath: '/bundle',
-        historyApiFallback: {
-            index: 'javascript.html'
-        },
-        hot: true,
-        overlay: {
-            warnings: true,
-            errors: true
-        },
-    },
     module: {
         rules: [           
             {

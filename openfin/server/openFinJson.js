@@ -1,10 +1,30 @@
-const packageJson = require("../package.json");
+let name;
+let company;
+let description;
 
 /**
- * Generates and OpenFin formatted JSON object.
+ * Initializes the module.
+ * 
+ * @param {string} appName String to use for App appName, UUID, and Icon appName.
+ * @param {string} companyName String to use for shortcut companyName appName.
+ * @param {string} shortcutDescription String to use for shortcut shortcutDescription.
+ */
+function initialize(appName, companyName, shortcutDescription) {
+    name = appName;
+    module.exports.appName = appName;
+
+    company = companyName;
+    module.exports.companyName = companyName;
+    
+    description = shortcutDescription;
+    module.exports.shortcutDescription = shortcutDescription;
+}
+
+/**
+ * Generates an OpenFin formatted JSON object.
  * 
  * @param {string} host Endpoint address to use as part of the http urls (e.g. "192.161.1.1").
- * @param {string} htmlFile HTML file name to add to the URL in startup_app (e.g. "index.html").
+ * @param {string} htmlFile HTML file appName to add to the URL in startup_app (e.g. "index.html").
  * @returns A well-formed JSON object that the OpenFin runtime can use to launch with.
  */
 function createJson(host, htmlFile) {
@@ -14,9 +34,9 @@ function createJson(host, htmlFile) {
     const json = {
         "devtools_port": 9090,
         "startup_app": {
-            "name": packageJson.name,
+            "name": name,
             "url": `http://${host}/${htmlFile}`,
-            "uuid": packageJson.name,
+            "uuid": name,
             "icon": `http://${host}/images/eikos-logo-multi.ico`,
             "autoShow": true,
             "defaultTop": 100,
@@ -29,13 +49,25 @@ function createJson(host, htmlFile) {
             "version": "stable"
         },
         "shortcut": {
-            "company": packageJson.company,
-            "description": packageJson.description,
+            "company": company,
+            "description": description,
             "icon": `http://${host}/images/eikos-logo-multi.ico`,
-            "name": packageJson.name
+            "name": name
         }
     };
     return json;
 }
 
-module.exports = createJson;
+module.exports = {
+    /**String to use for App appName, UUID, and Icon appName. */
+    appName: name,
+
+    /**String to use for shortcut companyName appName. */
+    companyName: company,
+
+    /**String to use for shortcut shortcutDescription. */
+    shortcutDescription: description,
+
+    initialize,
+    createJson,
+};
