@@ -8,12 +8,12 @@
             "type": "node",
             "request": "launch",
             "name": "Test JS",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "program": "${workspaceFolder}/node_modules/mocha-webpack/bin/_mocha",
             "args": [
                 "-u",
                 "tdd",
                 "--timeout",
-                "999999",
+                "100000",
                 "--colors",
                 "${workspaceFolder}\\src-javascript\\**\\*.test.js"
             ],

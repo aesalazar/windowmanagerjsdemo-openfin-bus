@@ -30,5 +30,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // create the grid passing in the div to use together with the columns & data we want to use
     new Grid(eGridDiv, gridOptions);
-});
 
+    //Create the url for the WebSocket
+    const hostname = location.hostname;
+    const port = location.port.length > 0 ? ":" + location.port : "";
+
+    //Open the connection to the server
+    const endpoint = "ws://" + hostname + port + "/";
+    ws = new WebSocket(endpoint);
+});

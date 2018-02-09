@@ -6,7 +6,7 @@
   "scripts": {
     "test-server": "mocha \"server/**/*.test.js\"",
     "start-server": "node server.js",
-    "test-js": "mocha-webpack --webpack-config webpack.test.js \"src-javascript/**/*.test.js\"",
+    "test-js": "mocha-webpack \"src-javascript/**/*.test.js\"",
     "build-js": "webpack --config webpack.javascript.js",
     "openfin-js": "node_modules/.bin/openfin --launch --config http://localhost:5000/app-javascript.json"
   },
