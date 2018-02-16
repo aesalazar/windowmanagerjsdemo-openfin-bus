@@ -38,7 +38,7 @@ app.use(express.static('./public'));
 //Generate app.json dynamically based on calling ip
 app.get('/app-javascript.json', function (req, res, next) {
     //Set the json to reference ipaddress and send it back
-    let json = openFinJson(req.headers.host, 'javascript.html');
+    let json = api.createJson(req.headers.host, 'javascript.html');
     res.setHeader('Content-type', 'application/json');
     res.send(json);
 });
@@ -46,7 +46,7 @@ app.get('/app-javascript.json', function (req, res, next) {
 //---------  WEB SOCKET LISTENERS ---------//
 wss.on('connection', (ws) => {
     console.log('Connection Established:');
-    console.log(ws.upgradeReq.headers);
+    //console.log(ws.upgradeReq.headers);
     console.log('\n');
 
     ws.on('message', (raw) => {

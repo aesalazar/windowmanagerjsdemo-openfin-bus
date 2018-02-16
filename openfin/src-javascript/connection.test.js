@@ -76,17 +76,15 @@ describe('***** connection.js *****', () => {
         }).timeout(500);
 
         it('disconnectPromise calls setItem', (done) => {
-            mockWebSocket.send.resetHistory();
-            mockWebSocket.readyState = ws.CLOSED;
+            mockSessionStorage.setItem.resetHistory();
 
             connection
                 .disconnectPromise()
-                .catch(() => {
+                .then(() => {
                     assert.isTrue(mockSessionStorage.setItem.calledOnce);
                     done();
                 });
         }).timeout(500);
-
 
         it('disconnectPromise does not call send when closed', (done) => {
             mockWebSocket.send.resetHistory();
@@ -112,4 +110,103 @@ describe('***** connection.js *****', () => {
                 });
         }).timeout(500);
     });
+
+    describe('onMetadata', () => {
+        let connection;
+
+        beforeEach((done) => {
+            connection = require('./connection').default;
+            connection.initialize(mockWebSocket, mockSessionStorage);
+            mockSessionStorage.getItem.returns("true");
+            mockWebSocket.readyState = ws.OPEN;
+            connection
+                .connectPromise()
+                .then(done);
+        });
+        
+        it('onMetadata is called', (done) => {
+            const handler = () => {
+                connection.removeMetadataHandler(handler);
+                done();
+            };
+            connection.addMetadataHandler(handler);
+
+            const ev = {
+                data: JSON.stringify({
+                    args: [{
+                        "messageType": connection.messageTypes.METADATA
+                    }]
+                })
+            };
+            mockWebSocket.onmessage(ev);
+        }).timeout(500);
+
+        it('onMetadata fieldNames is passed', (done) => {
+            const fieldNames = ["field1"];
+
+            const handler = (names) => {
+                connection.removeMetadataHandler(handler);
+                assert.sameMembers(names, fieldNames);
+                done();
+            };
+            connection.addMetadataHandler(handler);
+
+            const ev = {
+                data: JSON.stringify({
+                    args: [{
+                        "messageType": connection.messageTypes.METADATA,
+                        fieldNames,
+                    }]
+                })
+            };
+
+            mockWebSocket.onmessage(ev);
+        }).timeout(500);
+
+        it('onMetadata fieldTypes is passed', (done) => {
+            const fieldTypes = { "field1": "string"};
+
+            const handler = (names, types) => {
+                connection.removeMetadataHandler(handler);
+                assert.equal(types.field1, fieldTypes.field1);
+                done();
+            };
+            connection.addMetadataHandler(handler);
+
+            const ev = {
+                data: JSON.stringify({
+                    args: [{
+                        "messageType": connection.messageTypes.METADATA,
+                        fieldTypes,
+                    }]
+                })
+            };
+
+            mockWebSocket.onmessage(ev);
+        }).timeout(500);
+
+        it('onMetadata indexFields is passed', (done) => {
+            const indexFields = ["field1"];
+
+            const handler = (names, types, indices) => {
+                connection.removeMetadataHandler(handler);
+                assert.sameMembers(indices, indexFields);
+                done();
+            };
+            connection.addMetadataHandler(handler);
+
+            const ev = {
+                data: JSON.stringify({
+                    args: [{
+                        "messageType": connection.messageTypes.METADATA,
+                        indexFields,
+                    }]
+                })
+            };
+
+            mockWebSocket.onmessage(ev);
+        }).timeout(500);
+
+    });
+    
 });

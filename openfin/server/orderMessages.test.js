@@ -4,7 +4,7 @@ const orderMessages = require('./orderMessages');
 describe('***** orderMessages.js *****', () => {
     describe('order data', () => {
         it('field names count is correct', () => {
-            assert.equal(orderMessages.fieldsNames.length, 28);
+            assert.equal(orderMessages.fieldNames.length, 28);
         });
 
         it('field types count is correct', () => {

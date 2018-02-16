@@ -1,9 +1,8 @@
 const assert = require('chai').assert;
 const mockResponse = require('./response.mock');
+const api = require('./api');
 
 describe('***** api.js *****', () => {
-    let api = require('./api');
-    beforeEach(() => api = require('./api'));
 
     describe('initialize', () => {
 
@@ -151,15 +150,12 @@ describe('***** api.js *****', () => {
         const description = 'testDescription';
         const config = { name, company, description };
 
-        let api;
-
         beforeEach(() => {
-            api = require('./api');
             api.initialize(config);
         });
 
         it('getFieldNames has correct count', () => {
-            assert.equal(api.getFieldNames().length, orderMessages.fieldsNames.length);
+            assert.equal(api.getFieldNames().length, orderMessages.fieldNames.length);
         });
 
         it('getFieldTypes has correct count', () => {
@@ -185,10 +181,7 @@ describe('***** api.js *****', () => {
         const description = 'testDescription';
         const config = { name, company, description };
 
-        let api;
-
         beforeEach(() => {
-            api = require('./api');
             api.initialize(config);
             mockResponse.send.resetHistory();
         });
@@ -217,5 +210,56 @@ describe('***** api.js *****', () => {
             api.getMessages(null, mockResponse);
             assert.isTrue(mockResponse.send.calledOnce);
         });
+    });   
+
+
+    describe('data stream functions', () => {
+        const name = 'testName';
+        const company = 'testCompany';
+        const description = 'testDescription';
+        const config = { name, company, description };
+
+        beforeEach(() => {
+            api.initialize(config);
+            mockResponse.send.reset();
+        });
+
+        it('closeDataStream closes openDataStream', (done) => {
+            const wsObject = {};
+            api.openDataStream(wsObject, mockResponse, 10);
+            mockResponse.send.callsFake(data => {
+                api.closeDataStream(wsObject, mockResponse);
+                done();
+            });
+        }).timeout(3000);
+
+        it('openDataStream calls response.send with metadata', (done) => {
+            const wsObject = {};
+            mockResponse.send.callsFake(data => {
+                assert.isNotNull(data);
+                assert.equal(api.messageTypes.METADATA, data.messageType);
+                assert.isNotEmpty(data.fieldNames);
+                assert.isNotNull(data.fieldTypes);
+                assert.isNotEmpty(data.indexFields);
+                api.closeDataStream(wsObject, mockResponse);
+                done();
+            });
+
+            api.openDataStream(wsObject, mockResponse, 10);
+        }).timeout(3000);
+
+        it('openDataStream calls response.send with expected data count', (done) => {
+            const wsObject = {};
+            api.openDataStream(wsObject, mockResponse, 10);
+            
+            mockResponse.send.callsFake(data => {
+                assert.isNotNull(data);
+                assert.equal(api.messageTypes.DATA, data.messageType);
+                assert.isNotEmpty(data.data);
+                assert.equal(data.data.length, 10);
+                api.closeDataStream(wsObject, mockResponse);
+                done();
+            });
+        }).timeout(3000);
     });   
 });

@@ -9,7 +9,7 @@ const mockRequest = {
 };
 
 const mockResponse = {
-    send: sinon.spy(),
+    send: sinon.stub(),
     socket: mockSocket,
     request: mockRequest,
 };

@@ -1,6 +1,14 @@
 const openFinJson = require('./openFinJson');
 const orderMessages = require('./orderMessages');
 
+/** Backend message type. */
+const messageTypes = {
+    /**Message containing field names, types, and indexing. */
+    METADATA: 1,
+    /**Message containing row data. */
+    DATA: 2,
+};
+
 const channels = new Map();
 let streamInterval;
 
@@ -34,11 +42,13 @@ function initialize(config) {
  * @param {any} websocket connection to remove.
  */
 function removeChannel(websocket) {
-    if (!channels.get(websocket))
-        return;
+    const channel = channels.get(websocket);
 
-    clearInterval(channels.get(websocket));
-    channels.delete(websocket);
+    if (channel != null)
+        channels.delete(websocket);
+
+    if (channels.size == 0)
+        clearInterval(streamInterval);
 }
 
 /**
@@ -46,13 +56,22 @@ function removeChannel(websocket) {
  * 
  * @param {any} websocket connection object to send on
  * @param {any} response response object to send the data back over
+ * @param {any} orderCount number of order to send in each update batch
  */
-function openDataStream(websocket, response) {
+function openDataStream(websocket, response, orderCount) {
     //Make sure there is not already a stream open
     removeChannel(websocket);
 
     //Create channel
-    channels.set(websocket, () => updateOrderFunction(response));
+    channels.set(websocket, () => updateOrderFunction(response, orderCount));
+
+    //Send the metadata
+    response.send({
+        messageType: messageTypes.METADATA,
+        fieldNames: orderMessages.fieldNames,
+        fieldTypes: orderMessages.fieldTypes,
+        indexFields: orderMessages.indexFields
+    });
 
     //Start the stream if not yet
     startStreamer();
@@ -68,14 +87,24 @@ function closeDataStream(websocket, response) {
     removeChannel(websocket);
 }
 
+let currentOrder = 0;
 /**
  * Main function called by channel to get data.
  */
-function updateOrderFunction(response) {
+function updateOrderFunction(response, orderCount) {
+    const start = currentOrder;
+    const end = start + orderCount;
+
+    currentOrder += orderCount;
+    if (currentOrder > orderMessages.messages.length)
+        currentOrder = 0;
+    
+    const data = orderMessages.messages.slice(start, end);
 
     //Send it back to the client
     response.send({
-        data: {}
+        messageType: messageTypes.DATA,
+        data
     });
 }
 
@@ -105,10 +134,10 @@ function startStreamer() {
 function getFieldNames(websocket, response){
     if (response != null)
         response.send({
-            data: JSON.stringify(orderMessages.fieldsNames)
+            data: JSON.stringify(orderMessages.fieldNames)
         });
     
-    return orderMessages.fieldsNames;
+    return orderMessages.fieldNames;
 }
 
 /**
@@ -178,6 +207,8 @@ function getMessages(websocket, response) {
 
 module.exports = {
     initialize,
+    
+    messageTypes,
     
     openDataStream,
 

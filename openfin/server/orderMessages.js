@@ -3,14 +3,14 @@ const path = require('path');
 const messageData = require('./orderMessagesData');
 
 //Parse the header row to get name and types
-const fieldsNames = [];
+const fieldNames = [];
 const fieldTypes = {};
 
 messageData.header
     .split(",")
     .forEach(field => {
         const parts = field.split(":");
-        fieldsNames.push(parts[0]);
+        fieldNames.push(parts[0]);
         fieldTypes[parts[0]] = parts[1];
     });
 
@@ -28,13 +28,13 @@ messageData.orders
         const parts = field.split(",");
         const order = {};
         
-        parts.forEach((v, i) => order[fieldsNames[i]] = v);
+        parts.forEach((v, i) => order[fieldNames[i]] = v);
         orders.push(order);
     });
 
 module.exports = {
     /** Message Field Names */
-    fieldsNames,
+    fieldNames,
 
     /** Message Field Types mapped by Field Name */
     fieldTypes,

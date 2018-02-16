@@ -1,41 +1,59 @@
 import { Grid } from 'ag-grid';
+import connection from './connection';
+import * as Enumerable from "linq-es2015";
 
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../node_modules/ag-grid/dist/styles/ag-theme-dark.css';
 import '../node_modules/ag-grid/dist/styles/theme-dark.css';
 
-// column definitions
-const columnDefs = [
-    { headerName: "Make", field: "make" },
-    { headerName: "Model", field: "model" },
-    { headerName: "Price", field: "price" }
-];
+//Prep the connection
+const hostname = location.hostname;
+const port = location.port.length > 0 ? ":" + location.port : "";
 
-//row data    
-const rowData = [
-    { make: "Toyota", model: "Celica", price: 35000 },
-    { make: "Ford", model: "Mondeo", price: 32000 },
-    { make: "Porsche", model: "Boxter", price: 72000 }
-];
+//Open the connection to the server
+const endpoint = "ws://" + hostname + port + "/";
+const ws = new WebSocket(endpoint);
 
-const gridOptions = {
-    columnDefs,
-    rowData
+const gridOptions = {};
+let gridDiv;
+let fieldNames;
+
+connection.initialize(ws, sessionStorage);
+
+//Wire the callbacks
+ws.onopen = () => {
+    connection.connectPromise();
 };
 
-// wait for the document to be loaded, otherwise, ag-Grid will not find the div in the document.
-document.addEventListener("DOMContentLoaded", function () {
+const metadataHandler = (names, types, indexedNames) => {
+    fieldNames = names;
+    const columnDefs = Enumerable
+        .asEnumerable(fieldNames)
+        .Select(name => { return { headerName: name, field: name }; })
+        .ToArray();
+
+    gridOptions.columnDefs = columnDefs;
+
     // lookup the container we want the Grid to use
-    var eGridDiv = document.querySelector('#divMainGrid');
+    gridDiv = document.querySelector('#divMainGrid');
 
     // create the grid passing in the div to use together with the columns & data we want to use
-    new Grid(eGridDiv, gridOptions);
+    new Grid(gridDiv, gridOptions);
+};
+connection.addMetadataHandler(metadataHandler);
 
-    //Create the url for the WebSocket
-    const hostname = location.hostname;
-    const port = location.port.length > 0 ? ":" + location.port : "";
+const dataHandler = (data) => {
+    var rows = Enumerable
+        .asEnumerable(data)
+        .Select(rowString => {
+            const parts = rowString.split(",");
+            const order = {};
 
-    //Open the connection to the server
-    const endpoint = "ws://" + hostname + port + "/";
-    ws = new WebSocket(endpoint);
-});
+            parts.forEach((v, i) => order[fieldNames[i]] = v);
+            return order;
+        })
+        .ToArray();
+    
+    gridOptions.api.setRowData(rows);
+};
+connection.addDataHandler(dataHandler);

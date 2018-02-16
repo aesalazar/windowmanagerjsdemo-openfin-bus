@@ -1,6 +1,18 @@
-import ws from 'ws';
+import * as Enumerable from "linq-es2015";
+
 let webSocket;
 let storage;
+
+/** Backend message type. */
+const messageTypes = {
+    /**Message containing field names, types, and indexing. */
+    METADATA: 1,
+    /**Message containing row data. */
+    DATA: 2,
+};
+
+const metadataHandlers = [];
+const dataHandlers = [];
 
 /**
  * Initializes the connection.
@@ -10,6 +22,7 @@ let storage;
 function initialize(webSocketConnection, sessionStorage) {
     webSocket = webSocketConnection;
     storage = sessionStorage;
+    storage.setItem("streamOpen", "false");
 }
 
 /**
@@ -23,13 +36,13 @@ function connectPromise() {
         if (webSocket == null)
             reject("No webSocket object available.");
         
-        if (webSocket.readyState != ws.OPEN) {
+        if (webSocket.readyState !== webSocket.OPEN) {
             reject(`cannot connect to websocket with state '${webSocket.readyState}'`);
             return;
         }
 
         webSocket.onopen = function (ev) {
-            logText("webSocket connection established: " + (webSocket.readyState === ws.OPEN));
+            logText("webSocket connection established: " + (webSocket.readyState === webSocket.OPEN));
         };
 
         webSocket.onerror = function (ev) {
@@ -39,45 +52,35 @@ function connectPromise() {
 
         webSocket.onclose = function (ev) {
             if (ev.code !== 1000) {
-                logText("webSocket connection closed, retrying...");
-                setTimeout(attemptReconnect, 1000);
+                logText("webSocket connection closed...");
             }
+            logError(ev);
         };
 
         //Listen for responses from the server
         webSocket.onmessage = function (ev) {
             //Process data message
             const data = JSON.parse(ev.data).args[0];
-            const dataObjects = data.data;
 
-            // for (let i = 0; i < dataObjects.length; i++) {
-            //     const obj = dataObjects[i];
-            //     const div = document.createElement("div");
-            //     const fields = Object.keys(obj);
-
-            //     //Create a div for the each field and its value
-            //     for (let j = 0; j < fields.length; j++) {
-            //         const field = fields[j];
-
-            //         var span = document.createElement("span");
-            //         span.innerText = field + ": ";
-            //         div.appendChild(span);
-
-            //         var input = document.createElement("input");
-            //         input.type = "text";
-            //         input.value = obj[field];
-            //         input.style.width = "100px";
-            //         div.appendChild(input);
-            //     }
-
-            //     //Append object div to main
-            //     divOutputArea.appendChild(div);
-            // }
-
-            //Update the log
-            var txt = " Server ms: " + (data.serverEndTime - data.serverStartTime).toFixed(2);
-            txt += " Client ms: " + (performance.now() - responseStartTime).toFixed(2);
-            logText(txt);
+            //Fire associated callback
+            const type = data.messageType;
+            if (type === messageTypes.DATA)
+                dataHandlers.forEach(h => {
+                    try {
+                        h(data.data);
+                    } catch (error) {
+                        logError(`Error running data handler ${h}: ${error}`);
+                    }
+                });
+          
+            else if (type === messageTypes.METADATA)
+                metadataHandlers.forEach(h => {
+                    try {
+                        h(data.fieldNames, data.fieldTypes, data.indexFields);
+                    } catch (error) {
+                        logError(`Error running metadata handler ${h}: ${error}`);
+                    }
+                });
         };
 
         openStream();
@@ -92,7 +95,7 @@ function connectPromise() {
  */
 function disconnectPromise() {
     return new Promise((resolve, reject) => {
-        if (webSocket == null || webSocket.readyState === WebSocket.CLOSED) {
+        if (webSocket == null || webSocket.readyState === webSocket.CLOSED) {
             reject("WebSocket is already disconnected.");
             return;
         }
@@ -113,8 +116,60 @@ function openStream() {
     if (storage.getItem("streamOpen") == "true")
         return;
         
-    webSocket.send(JSON.stringify({ call: "openDataStream", args: [100] }));
+    webSocket.send(JSON.stringify({
+        call: "openDataStream",
+        args: [100]
+    }));
+
     storage.setItem("streamOpen", "true");
+}
+
+/** 
+ * Adds callback to invoke when a header message is received from the backend. Callbacks
+ * will have the parameters:
+ * {string array} fieldNames Message Field Names string collection.
+ * {object array} fieldTypes Message Field Types mapped by Field Name object collection.
+ * {string array} indexFields Indexable (non-string) fields names string collection.
+ * 
+ * @param {any} callback Callback to add.
+ */
+function addMetadataHandler(callback) {
+    metadataHandlers.push(callback);
+}
+
+/** 
+ * Removes callback to invoke when a header message is received from the backend.
+ * 
+ * @param {any} callback Callback to remove if found.
+ */
+function removeMetadataHandler(callback) {
+    const index = metadataHandlers.indexOf(callback);
+    if (index > -1) {
+        metadataHandlers.splice(index, 1);
+    }
+}
+
+/** 
+ * Adds callback to invoke when a data message is received from the backend:
+ * {object} data row data object received.
+ * 
+ * @param {any} callback Callback to add.
+ */
+function addDataHandler(callback) {
+    dataHandlers.push(callback);
+}
+
+
+/** 
+ * Removes callback to invoke when a data message is received from the backend.
+ *
+ * @param {any} callback Callback to remove if found.
+ */
+function removeDataHandler(callback) {
+    const index = dataHandlers.indexOf(callback);
+    if (index > -1) {
+        dataHandlers.splice(index, 1);
+    }
 }
 
 /**
@@ -126,8 +181,22 @@ function logText(text) {
     console.log(text);
 }
 
+/**
+ * Message error logging.
+ * 
+ * @param {any} text Log message.
+ */
+function logError(text) {
+    console.error(text);
+}
 export default {
     initialize,
     connectPromise,
     disconnectPromise,
+
+    messageTypes,
+    addMetadataHandler,
+    removeMetadataHandler,
+    addDataHandler,
+    removeDataHandler,
 };
