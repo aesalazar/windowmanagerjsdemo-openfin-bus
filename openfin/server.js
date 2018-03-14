@@ -37,7 +37,7 @@ app.use(express.static('./public'));
 
 //Generate app.json dynamically based on calling ip
 app.get('/app-javascript.json', function (req, res, next) {
-    //Set the json to reference ipaddress and send it back
+    //Set the json to reference ip address and send it back
     let json = api.createJson(req.headers.host, 'javascript.html');
     res.setHeader('Content-type', 'application/json');
     res.send(json);

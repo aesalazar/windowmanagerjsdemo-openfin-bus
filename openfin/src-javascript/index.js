@@ -1,6 +1,8 @@
 import { Grid } from 'ag-grid';
-import connection from './connection';
 import * as Enumerable from "linq-es2015";
+
+import connection from './connection';
+import columnDefinitions from './columnDefinitions';
 
 import '../node_modules/ag-grid/dist/styles/ag-grid.css';
 import '../node_modules/ag-grid/dist/styles/ag-theme-dark.css';
@@ -14,25 +16,28 @@ const port = location.port.length > 0 ? ":" + location.port : "";
 const endpoint = "ws://" + hostname + port + "/";
 const ws = new WebSocket(endpoint);
 
-const gridOptions = {};
-let gridDiv;
-let fieldNames;
-
 connection.initialize(ws, sessionStorage);
-
-//Wire the callbacks
 ws.onopen = () => {
     connection.connectPromise();
 };
 
+//Wire for metadata being received
+const gridOptions = {
+    enableFilter: true,
+    enableSorting: true,
+};
+
+let gridDiv;
+let fieldNames;
+
 const metadataHandler = (names, types, indexedNames) => {
     fieldNames = names;
-    const columnDefs = Enumerable
-        .asEnumerable(fieldNames)
-        .Select(name => { return { headerName: name, field: name }; })
-        .ToArray();
-
-    gridOptions.columnDefs = columnDefs;
+    columnDefinitions.buildGridOptions(
+        fieldNames,
+        types,
+        indexedNames,
+        gridOptions
+    );
 
     // lookup the container we want the Grid to use
     gridDiv = document.querySelector('#divMainGrid');
@@ -40,6 +45,8 @@ const metadataHandler = (names, types, indexedNames) => {
     // create the grid passing in the div to use together with the columns & data we want to use
     new Grid(gridDiv, gridOptions);
 };
+
+//Wire for data received
 connection.addMetadataHandler(metadataHandler);
 
 const dataHandler = (data) => {
@@ -56,4 +63,5 @@ const dataHandler = (data) => {
     
     gridOptions.api.setRowData(rows);
 };
+
 connection.addDataHandler(dataHandler);
